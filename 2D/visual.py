@@ -4,7 +4,7 @@ import matplotlib.colors
 import matplotlib.image as image
 import numpy as np
 
-from IPython import display 
+#from IPython import display 
 
 if __name__ == "__main__":
     with open("2D/sim.data", "r") as f:
@@ -20,8 +20,8 @@ if __name__ == "__main__":
         finalTell = f.tell()
 
     STEPS = (finalTell-seekTo) // (SIZE_X*SIZE_Y*PRECISION_BYTES)
-    V_MIN, V_MAX = np.min(data), np.max(data)
-    v_max = max(abs(V_MIN), V_MAX)
+    #V_MIN, V_MAX = np.min(data), np.max(data)
+    #v_max = max(abs(V_MIN), V_MAX)
 
     data = data.reshape((STEPS, SIZE_X, SIZE_Y)).swapaxes(1,2)
 
@@ -33,9 +33,9 @@ if __name__ == "__main__":
     im = plt.imshow(data[0], interpolation='none', cmap="coolwarm", aspect=1, vmin=-v_max, vmax=v_max)
     ax = plt.gca()
     ax.invert_yaxis()
-    ax.imshow(terrain)
+    #ax.imshow(terrain)
     ax.set(xlabel="index (n)", ylabel="index (m)")
-    cbar = plt.colorbar(im)
+    #cbar = plt.colorbar(im)
     ax.set_title("Electric Field Strength at Step = 0")
 
     # Uncomment below for running avg scaling
@@ -45,11 +45,7 @@ if __name__ == "__main__":
 
         # Code below will adjust scale for better dynamic range while 
         # maintaining relative data between positive and negative values
-        cur_min = np.min(data[t])
-        cur_max = np.max(data[t])
-        m_val[0] = m_val[0]*0.90 + max(abs(cur_min), abs(cur_max))*0.1
-        #im.set_norm(matplotlib.colors.Normalize(-m_val[0], m_val[0]))
-        
+
         ax.set_title(f"Electric Field Strength at Step = {t}")
         return [im]
     

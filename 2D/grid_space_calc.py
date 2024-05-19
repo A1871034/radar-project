@@ -31,8 +31,11 @@ if __name__ == "__main__":
         width = int(ceil(des_width/dx_and_dy))
         height = int(ceil(des_height/dx_and_dy))
 
+        height = 1766
+
         print(f"Width (px) = {width}")
         print(f"Height (px) = {height}")
+
         
         precision = 8 # bytes
         print(f"Assuming {precision}B precision")

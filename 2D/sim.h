@@ -41,6 +41,8 @@ class sim {
     // Terrain reflection
     int * PEC_HEIGHTS = nullptr;
 
+    int N_THREADS = 0;
+    int DEVICE_N = 0;
 
     sampler * s;
     sources * source;
@@ -58,4 +60,10 @@ class sim {
     inline void updateH();
     const double *get_ez();
     void run(unsigned int timesteps);
+    void reset();
+    int getNumThreads();
+    void setDesiredThreads(int num);
+    int getDeviceNum();
+    unsigned int getSizeX();
+    unsigned int getSizeY();
 };
