@@ -38,7 +38,7 @@ void Tester::test(int numThreads, int deviceNum = 0) {
 
     if (s->getNumThreads() != numThreads) {
         // Doing this after is a bit silly but whatever for now
-        printf("Undesired thread-count: Requested %d, got %d", numThreads, s->getNumThreads());
+        printf("Undesired thread-count: Requested %d, got %d\n", numThreads, s->getNumThreads());
     }
 
     int device = s->getDeviceNum();

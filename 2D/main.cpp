@@ -12,7 +12,7 @@ int main() {
     height_data hd ("./heights.data");
     int width = hd.get_x();
     int height = hd.get_min_y() + 200;
-    int steps = 1000;
+    int steps = 200;
 
     sampler sa = sampler(0, width, height, "sim.data");
     sources so = sources(20);
