@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sim.h"
+#include <cstdint>
 
 /* 
 Can output to CSV like

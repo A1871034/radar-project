@@ -31,7 +31,7 @@ void sampler::prepareWriting() {
     // Clear previous data and write header
     if (!fileHeaderExists) {
         fileHandle = fopen(fileName.c_str(), "w");
-        fprintf(fileHandle, "%u,%u,%u\n", SIZE_X, SIZE_Y, sizeof(double));
+        fprintf(fileHandle, "%u,%u,%lu\n", SIZE_X, SIZE_Y, sizeof(double));
         fileHeaderExists = true;
         fclose(fileHandle);
     }

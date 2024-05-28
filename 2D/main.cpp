@@ -6,7 +6,6 @@
 
 #include <omp.h>
 
-
 int main() {
 
     height_data hd ("./heights.data");

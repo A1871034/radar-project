@@ -54,6 +54,6 @@ void Tester::test(int numThreads, int deviceNum = 0) {
     }
 
     if (OUTPUT_TO_FILE) {
-        fprintf(fileHandle, "%d, %d, %d, %u, %u, %llu, %llu, %f\n", device, threads, STEPS, width, height, duration, tps, tpc);
+        fprintf(fileHandle, "%d, %d, %d, %u, %u, %lu, %lu, %f\n", device, threads, STEPS, width, height, duration, tps, tpc);
     }
 }
