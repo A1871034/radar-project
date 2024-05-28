@@ -1,72 +1,9 @@
-# Basically below code but modified for docker
-# https://kristerw.blogspot.com/2017/04/building-gcc-with-support-for-nvidia.html
+FROM ubuntu
 
-# Start with Ubuntu image that has cuda installed
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
-
-# Set directory variables
-ARG work_dir=/app/wrk
-ARG install_dir=/app/install
-ARG cuda=/usr/local/cuda
-
-# Install git
 RUN apt update
-RUN apt install -y git
+RUN apt install -y gcc-13-offload-nvptx
+RUN apt install -y g++
+RUN apt install -y make
 
-# Get required repos
-WORKDIR ${work_dir}
-RUN git clone https://github.com/SourceryTools/nvptx-tools.git
-RUN git clone git://sourceware.org/git/newlib-cygwin.git nvptx-newlib
-RUN git clone --branch releases/gcc-13 git://gcc.gnu.org/git/gcc.git gcc
-
-# Install dependencies for building and making
-RUN apt install -y curl
-RUN apt install -y flex
-
-# Build assembler and linking tools
-WORKDIR  ${work_dir}/nvptx-tools
-RUN ./configure \
-        --with-cuda-driver-include=${cuda}/include \
-        --with-cuda-driver-lib=${cuda}/lib64 \
-        --prefix=${install_dir}
-RUN make || exit 1
-RUN make install || exit 1
-
-# Set up the GCC source tree
-WORKDIR  ${work_dir}/gcc
-RUN contrib/download_prerequisites
-RUN ln -s ../nvptx-newlib/newlib newlib
-WORKDIR ${work_dir}
-ARG target=$(gcc/config.guess)
-
-# Build nvptx GCC
-WORKDIR  ${work_dir}/build-nvptx-gcc
-RUN ../gcc/configure \
-         --target=nvptx-none --with-build-time-tools=${install_dir}/nvptx-none/bin \
-         --enable-as-accelerator-for=${target} \
-         --disable-sjlj-exceptions \
-         --enable-newlib-io-long-long \
-         --enable-languages="c,c++,fortran,lto" \
-         --prefix=${install_dir}
-RUN make -j`nproc` || cat /app/wrk/build-nvptx-gcc/nvptx-none/libgcc/config.log
-RUN make install || exit 1
-WORKDIR ${work_dir}
-
-# Build host GCC
-WORKDIR ${work_dir}/build-host-gcc
-RUN ../gcc/configure \
-         --enable-offload-targets=nvptx-none \
-         --with-cuda-driver-include=${cuda}/include \
-         --with-cuda-driver-lib=${cuda}/lib64 \
-         --disable-bootstrap \
-         --disable-multilib \
-         --enable-languages="c,c++,fortran,lto" \
-         --prefix=${install_dir}
-RUN make -j`nproc` || exit 1
-RUN make install || exit 1
-WORKDIR ${work_dir}
-
-ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${install_dir}/lib64"
-
-
-
+WORKDIR /rp
+RUN /bin/bash

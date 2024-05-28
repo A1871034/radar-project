@@ -1,0 +1,58 @@
+<h2>Docker Setup</h2>
+<h3>Setup
+Following <a href="https://docs.nvidia.com/cuda/wsl-user-guide/index.html">Nvidia WSL Guide</a>:</h3>
+
+<b>In command prompt</b>
+1. Install WSL (`wsl.exe --install`)
+2. Update WSL (`wsl.exe --update`)
+
+<b>In WSL Ubuntu terminal</b> (to open, run `wsl.exe` in command prompt, it defaults to ubuntu)
+<br>
+Install Docker by following the <a href="https://docs.docker.com/engine/install/ubuntu/">install guide</a><br>
+Install NVIDIA Cuda-Toolkit
+1. `sudo apt-key del 7fa2af80`
+2. Follow <a href = "https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local">Cuda-Toolkit install for wsl</a>
+
+<h2>Verifying Docker and Cuda-Toolkit installs</h2>
+
+<b>In WSL Ubuntu</b> 
+1. run `nvidia-smi` to see if Ubuntu detects the GPU
+2. `sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi`
+
+    Runs "nvidia-smi" in docker as per "<a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/sample-workload.html#running-a-sample-workload-with-docker">Running a Sample Workload</a>" to see if Docker detects the GPU
+
+    
+
+<h2>Building Docker Image from Dockerfile</h2>
+
+<b>In WSL Ubuntu:</b>
+1. `cd /rp/2D`
+2. `docker build -t radar_propagation ./docker_app`
+
+<h2>Running the Built Docker Image</h2>
+
+<b>In WSL Ubuntu:</b>
+1. `docker run -it --rm --runtime=nvidia --gpus all --mount type=bind,source=/mnt/<DRIVE_LETTER>/<PATH_TO_PROJECT_DIR>/radar-project,target=/rp radar_propagation`
+
+    Make sure to replace "<DRIVE_LETTER>" with the windows drive letter of the path and "<PATH_TO_PROJECT_DIR>" with the path to the project directory (excluding path letter)
+
+    Eg. if project path is "D:\Users\User\radar-project"
+    <br>Use "source=/mnt/d/Users/User/radar-project"
+
+<h2>Verifying OpenMP GPU Offloading Works</h2>
+
+In Docker container after "Running the Built Docker Image"
+
+1. `cd /rp/2D/docker_app`
+2. `make`
+3. `./gpu_test.exe`
+
+If OpenMP is sucessfuly GPU offloading you should see the output as "on GPU: yes" 
+
+<h2>Compiling</h2>
+
+After running the docker image `cd` to correct directory (likely `cd 2D`) and then `make`
+
+Run the compiled executable in the Docker container.
+
+With some tweaking it is likely possible to run the executable from WSL Ubuntu.
