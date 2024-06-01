@@ -139,7 +139,7 @@ void sim::run(unsigned int timesteps) {
         I_ez(100, 150) += (1.0 - 2.0 * arg) * exp(-arg); 
 
         // Sample
-        //s->run(ez);
+        s->run(ez);
     }
 }
 

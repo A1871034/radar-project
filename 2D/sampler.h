@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdio.h>
 
+#define DEBUG_SAMPLE true
+
 class sampler {
     unsigned int sampleEvery = 2;
     unsigned int step = 0;
@@ -15,7 +17,7 @@ class sampler {
     bool fileHeaderExists = false;
 
     public:
-        sampler(unsigned int sampleEvery, unsigned int sizeY, unsigned int sizeX, std::string fileName);
+        sampler(unsigned int sampleEvery, unsigned int sizeY, unsigned int sizeX, std::string fileName=(DEBUG_SAMPLE ? "sim.debug" : "sim.data"));
         sampler() {}
         ~sampler();
         void setSampleEvery(unsigned int _sampleEvery);
