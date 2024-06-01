@@ -22,6 +22,7 @@ class sim {
 
     unsigned int SIZE_X;
     unsigned int SIZE_Y;
+    unsigned int PPW;
 
     // Update E_CONST, H_CONST with a grid and stored values to have different materials at locations
     double CONST_SAME_FIELD = 1.0;
@@ -42,12 +43,11 @@ class sim {
 
     int N_THREADS = -1;
     int DEVICE_N = -1;
-    int N_TEAMS = -1;
 
     sampler * s;
 
     public:
-    sim(unsigned int sizeX, unsigned int sizeY);
+    sim(unsigned int sizeX, unsigned int sizeY, unsigned int PPW);
     ~sim();
     void setSampler(sampler * _s);
     void abcInit();

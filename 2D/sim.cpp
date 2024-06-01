@@ -7,7 +7,7 @@
 // Update Equations and ABCs from https://eecs.wsu.edu/~schneidj/ufdtd/ufdtd.pdf
 
 
-sim::sim(unsigned int sizeX, unsigned int sizeY) : SIZE_X(sizeX), SIZE_Y(sizeY) {
+sim::sim(unsigned int sizeX, unsigned int sizeY, unsigned int PPW) : SIZE_X(sizeX), SIZE_Y(sizeY), PPW(PPW) {
     hx = (double *) calloc(SIZE_X * (SIZE_Y - 1), sizeof(double)); 
     hy = (double *) calloc((SIZE_X - 1) * SIZE_Y, sizeof(double));
     ez = (double *) calloc(SIZE_X * SIZE_Y, sizeof(double)); 
@@ -50,7 +50,6 @@ const double* sim::get_ez() {
 }
 
 void sim::run(unsigned int timesteps) {
-    double ppw = 20;
     #pragma omp target map(to: hx[0:SIZE_X * (SIZE_Y - 1)], \
                                      hy[0:(SIZE_X - 1) * SIZE_Y], \
                                      ez[0:SIZE_X * SIZE_Y], \
@@ -59,19 +58,16 @@ void sim::run(unsigned int timesteps) {
                                      ezBot[0:SIZE_X*6], \
                                      ezLeft[0:SIZE_Y*6], \
                                      PEC_HEIGHTS[0:SIZE_X]) \
-                        map(tofrom: DEVICE_N, N_THREADS, N_TEAMS) \
+                        map(tofrom: DEVICE_N, N_THREADS) \
                         firstprivate(CONST_SAME_FIELD, CONST_H_DUE_TO_E, CONST_E_DUE_TO_H, \
-                        ABC_COEF0, ABC_COEF1, ABC_COEF2, ppw, timesteps ) 
+                        ABC_COEF0, ABC_COEF1, ABC_COEF2, PPW, timesteps) 
     {
         DEVICE_N = omp_get_device_num();
-            //N_TEAMS = omp_get_num_teams();
             for (unsigned int step = 0; step < timesteps; step++) {
                 // updateH();
-
                 #pragma omp target teams distribute parallel for simd simdlen(32) collapse(2) nowait
                 for (unsigned int m = 0; m < SIZE_X; m++) {
-                    for (unsigned int n = 0; n < SIZE_Y - 1; n++) {      
-                        //N_THREADS = omp_get_num_threads();                  
+                    for (unsigned int n = 0; n < SIZE_Y - 1; n++) {                    
                         //Hx(mm, nn) = Chxh(mm, nn) * Hx(mm, nn) - Chxe(mm, nn) * (Ez(mm, nn + 1) - Ez(mm, nn));
                         I_hx(m, n) = CONST_SAME_FIELD*I_hx(m, n) - CONST_H_DUE_TO_E*(I_ez(m, n + 1) - I_ez(m, n));
                     }
@@ -151,7 +147,7 @@ void sim::run(unsigned int timesteps) {
                 }
 
                 // Hardwired additive sourcenode in center
-                double arg = M_PI * ((CDTDS * step - 0.0) / ppw - 1.0);
+                double arg = M_PI * ((CDTDS * step - 0.0) / PPW - 1.0);
                 arg = arg * arg;
                 I_ez(100, 150) += (1.0 - 2.0 * arg) * exp(-arg); 
                 //s->run(ez);
@@ -162,10 +158,6 @@ void sim::run(unsigned int timesteps) {
 
 int sim::getNumThreads() {
     return N_THREADS;
-}
-
-int sim::getNumTeams() {
-    return N_TEAMS;
 }
 
 void sim::setDesiredThreads(int num = 0) {

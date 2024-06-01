@@ -21,5 +21,6 @@ class Tester {
     Tester(sim* s, int steps, bool verbose = false) : s(s), STEPS(steps), VERBOSE(verbose) {}
     ~Tester() {}
     void initFile(std::string fileName);
-    void test(int numThreads, int deviceNum);
+    void test(int deviceNum);
+    void setSim(sim * _s);
 };
