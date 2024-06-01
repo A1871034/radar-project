@@ -3,7 +3,6 @@
 #include <math.h>
 #include "sampler.h"
 #include "constants.h"
-#include "sources.h"
 
 #define I_hx(m, n) hx[(m) * (SIZE_Y - 1) + n]
 #define I_hy(m, n) hy[(m) * SIZE_Y + n]
@@ -41,27 +40,22 @@ class sim {
     // Terrain reflection
     int * PEC_HEIGHTS = nullptr;
 
-    int N_THREADS = 0;
-    int DEVICE_N = 0;
+    int N_THREADS = -1;
+    int DEVICE_N = -1;
+    int N_TEAMS = -1;
 
     sampler * s;
-    sources * source;
 
     public:
     sim(unsigned int sizeX, unsigned int sizeY);
     ~sim();
     void setSampler(sampler * _s);
-    void setSource(sources * _so);
     void abcInit();
-    inline void abc();
     void pecInit(int * data);
-    inline void pec();
-    inline void updateE();
-    inline void updateH();
     const double *get_ez();
     void run(unsigned int timesteps);
-    void reset();
     int getNumThreads();
+    int getNumTeams();
     void setDesiredThreads(int num);
     int getDeviceNum();
     unsigned int getSizeX();
