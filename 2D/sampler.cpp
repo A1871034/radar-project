@@ -50,7 +50,7 @@ void sampler::run(const double* ez)
         #if DEBUG_SAMPLE
         fwrite(ez, sizeof(double), SIZE_X * SIZE_Y, fileHandle);
         #else
-        fwrite(I_ez(100, 150), sizeof(double), 1, fileHandle);
+        fwrite(&I_ez(100, 150), sizeof(double), 1, fileHandle);
         #endif
     }
 

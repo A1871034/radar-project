@@ -16,7 +16,7 @@ int main() {
     int steps = 1000;
     
     // Setup Sampler
-    sampler sa = sampler(100, width, height);
+    sampler sa = sampler(1, width, height);
 
     // OpenMP Device Info
     printf("Default device: %d\n", omp_get_default_device());
