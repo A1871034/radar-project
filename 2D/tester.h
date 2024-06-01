@@ -22,4 +22,5 @@ class Tester {
     ~Tester() {}
     void initFile(std::string fileName);
     void test(int numThreads, int deviceNum);
+    void setSim(sim* _s);
 };

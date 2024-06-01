@@ -6,30 +6,41 @@
 #include <omp.h>
 
 int main() {
+    unsigned int PPW = 20;
+
+    // Setup Height
     height_data hd ("./heights.data");
     int width = hd.get_x();
-    int height = hd.get_min_y() + 200;
-    height = 12500;
-    int steps = 200;
-
+    int height = hd.get_min_y() + PPW*10; // 10 Wavelengths over top of highest point
+    height = 1000;
+    int steps = 5;
+    
+    // Setup Sampler
     sampler sa = sampler(0, width, height, "sim.data");
 
-    sim si(width, height);
-    si.pecInit(hd.get_data());
-    si.setSampler(&sa);
-
-    //si.run(steps);
+    // OpenMP Device Info
+    printf("Default device: %d\n", omp_get_default_device());
+    printf("Devices: %d\n", omp_get_num_devices());
     
-    Tester tester(&si, steps, true);
+    // Setup Tester
+    Tester tester(nullptr, steps, true);
     tester.initFile("time_test.csv");
     
-    tester.test(0,0);
-    //tester.test(12, 1);
-    //tester.test(8, 1);
-    //tester.test(6, 1);
-    //tester.test(4, 1);
-    //tester.test(2, 1);
-    //tester.test(1, 1);
+    // Initialise Testing Parameters
+    int heights[] = {1000, 2500, 5000, 7500, 10000, 12500, 15000};
+    int threads[] = {1,2,4,8,12};
+
+    for (int height: heights) {
+        // Setup simulation
+        sim si(width, height, PPW);
+        si.pecInit(hd.get_data());
+        si.setSampler(&sa);
+        tester.setSim(&si);
+        for (int thread_count: threads) {
+            // Test Sim
+            tester.test(thread_count,1);
+        }
+    }
 
     //printf("Default %d\nNum Devices %d\nInitial/Host %d",omp_get_default_device(), omp_get_num_devices(), omp_get_initial_device());
     return 0;
