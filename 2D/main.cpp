@@ -13,8 +13,8 @@ int main() {
     height_data hd ("./heights.data");
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10;
-    height = 5000;
-    int steps = 200;
+    height = 1000;
+    int steps = 200;//width;
 
     // Setup Sampler
     sampler sa = sampler(0, width, height, "sim.data");
@@ -27,6 +27,17 @@ int main() {
     Tester tester(nullptr, steps, true);
     tester.initFile("time_test.csv");
 
+    #if DEBUG_SAMPLE
+        sim si(width, height, PPW);
+        si.pecInit(hd.get_data());
+        si.initSampler();
+        si.setSamplePeriod(20);
+        tester.setSim(&si);
+        // Test Sim
+        tester.test(gpu_device);
+        return 0;
+    #endif
+
     // Initialise Testing Parameters
     int heights[] = {1000, 2500, 5000, 7500, 10000, 12500, 15000};
 
@@ -35,7 +46,6 @@ int main() {
         // Setup simulation
         sim si(width, height, PPW);
         si.pecInit(hd.get_data());
-        si.setSampler(&sa);
         tester.setSim(&si);
         // Test Sim
         tester.test(gpu_device);

@@ -1,11 +1,11 @@
-println("Loading GLMakie...")
-using WGLMakie
+#println("Loading GLMakie...")
+#using GLMakie
 
-#println("Loading CairoMakie...")
-#using CairoMakie
+println("Loading CairoMakie...")
+using CairoMakie
 
 println("Loading Sim Data...")
-f = open(raw"C:\Users\Xander\Documents\Coding\radar-project\2D\sim_19500_steps.data", "r")
+f = open(raw"C:\Users\Xander\Documents\Coding\radar-project\2D\sim.debug", "r")
 data_header = readline(f)
 
 prev = position(f)
@@ -14,8 +14,9 @@ seekend(f)
 SIZE_X, SIZE_Y, PRECISION_BYTES = split(data_header, ",")
 SIZE_X = parse(Int64, SIZE_X)
 SIZE_Y = parse(Int64, SIZE_Y)
-SIZE_Z = Int64((position(f) - prev)/(SIZE_X*SIZE_Y*8))
 PRECISION_BYTES = parse(Int64, PRECISION_BYTES)
+SIZE_Z = Int64((position(f) - prev)/(SIZE_X*SIZE_Y*PRECISION_BYTES))
+
 seek(f, prev)
 ez = Array{Float64, 3}(undef, SIZE_X, SIZE_Y, SIZE_Z)
 read!(f, ez)
@@ -31,8 +32,6 @@ read!(f, terrain_heights)
 close(f)
 
 println("Initializing Animation...")
-
-# Fucked shit
 
 SCALE = 2000
 function colorscale(val)
@@ -55,10 +54,10 @@ function get_function(time)
 end
 
 funct = @lift(get_function($time))
-x = range(1,SIZE_X)
-y = range(1,SIZE_Y)
-fig = Figure(resolution=(Int32(floor(SIZE_X/8)), Int32(floor(SIZE_Y/8))))
-ax = Axis(fig[1,1], aspect=DataAspect(), title="2D Terrain Demo (Julia)", limits=(1, SIZE_X, 1, SIZE_Y))
+x = range(1,1101)
+y = range(1,500)
+fig = Figure(resolution=(1100, 500))
+ax = Axis(fig[1,1], aspect=DataAspect(), title="2D Terrain Demo (Julia)", limits=(1, 1100, 1, 500))
 hm = heatmap!(ax, x, y, funct, colormap=:coolwarm, colorscale=colorscale, colorrange=(-0.01, 0.01))
 
 Colorbar(fig[:, end+1], hm, width=10)
@@ -66,17 +65,16 @@ rowsize!(fig.layout, 1, size(ax.scene)[2])
 resize_to_layout!(fig)
 lines!(ax, terrain_heights, color="black", label=false)
 
-time[] = 5
-display(fig)
+time[] = 1
+#display(fig)
 
-#println("Animating...")
-#record(fig, "time_animation.mp4", 1:SIZE_Z;
-#        framerate = 12) do t
-#    if t % 5 == 0
-#        println("t = $t")
-#    end
-#    time[] = t
-#end
+println("Animating...")
+record(fig, "time_animation.mp4", 1:SIZE_Z;
+        framerate = 12) do t
+    if t % 5 == 0
+        println("t = $t")
+    end
+    time[] = t
+end
 
 println("Done!")
-

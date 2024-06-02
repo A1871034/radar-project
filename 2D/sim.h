@@ -1,8 +1,13 @@
 #pragma once
 
-#include <math.h>
 #include "sampler.h"
 #include "constants.h"
+
+#include <math.h>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
 
 #define I_hx(m, n) hx[(m) * (SIZE_Y - 1) + n]
 #define I_hy(m, n) hy[(m) * SIZE_Y + n]
@@ -12,6 +17,8 @@
 #define I_ezRight(M, Q, N) ezRight[(N) * 6 + (Q) * 3 + (M)]
 #define I_ezTop(N, Q, M) ezTop[(M) * 6 + (Q) * 3 + (N)]
 #define I_ezBot(N, Q, M) ezBot[(M) * 6 + (Q) * 3 + (N)]
+
+#define DEBUG_SAMPLE true
 
 class sim {
     friend class sampler;
@@ -23,6 +30,10 @@ class sim {
     unsigned int SIZE_X;
     unsigned int SIZE_Y;
     unsigned int PPW;
+    #if DEBUG_SAMPLE
+    FILE * FILE_HANDLE;
+    unsigned int SAMPLE_PERIOD = 199;
+    #endif
 
     // Update E_CONST, H_CONST with a grid and stored values to have different materials at locations
     double CONST_SAME_FIELD = 1.0;
@@ -55,9 +66,11 @@ class sim {
     const double *get_ez();
     void run(unsigned int timesteps);
     int getNumThreads();
-    int getNumTeams();
-    void setDesiredThreads(int num);
     int getDeviceNum();
     unsigned int getSizeX();
     unsigned int getSizeY();
+    #if DEBUG_SAMPLE
+    void initSampler();
+    void setSamplePeriod(unsigned int period);
+    #endif
 };

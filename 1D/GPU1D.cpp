@@ -6,7 +6,7 @@
 
 #include "omp.h"
 
-#define SIZE 20000000
+#define SIZE 200000
 
 using namespace std;
 
@@ -15,44 +15,53 @@ int main()
     double * ez = (double*) calloc(SIZE, sizeof(double));
     double * hy = (double*) calloc(SIZE, sizeof(double));
     double imp0 = 377.0;
-    int qTime, maxTime = 10000, mm, sample_period = 10;
+    int maxTime = 200;
+    int qTime = 0;
 
-    char * ss = (char *) malloc((maxTime/sample_period + 1)*sizeof(char));
+    double * ss = (double *) malloc(maxTime*sizeof(double));
+    
 
     /* do time stepping */
-    #pragma omp target teams map(ez[0:SIZE], hy[0:SIZE], imp0, qTime, maxTime, mm)
+    #pragma omp target data map(to: ez[0:SIZE], hy[0:SIZE]) map(tofrom: ss[0:maxTime])
     {
-        for (qTime = 0; qTime < maxTime; qTime++) {
-            /* simple ABC for hy[Size-1] */
-            hy[SIZE-1] = hy[SIZE-2];
-
+        for (qTime = 0; qTime < maxTime; qTime++) {            
             /* update magnetic field */
-            #pragma omp distribute parallel for
-            for (mm = 0; mm < SIZE - 1; mm++)
-            hy[mm] = hy[mm] + (ez[mm + 1] - ez[mm]) / imp0;
+            #pragma omp target teams distribute parallel for simd
+            for (int mm = 0; mm < SIZE - 1; mm++) {
+                hy[mm] = hy[mm] + (ez[mm + 1] - ez[mm]) / imp0;
+            }
 
-            /* simple ABC for ez[0] */
-            ez[0] = ez[1];
+            #pragma omp target nowait
+            {
+                /* simple ABC for ez[0] */
+                ez[0] = ez[1];
+            }
 
             /* update electric field */
-            #pragma omp distribute parallel for 
-            for (mm = 1; mm < SIZE; mm++)
-            ez[mm] = ez[mm] + (hy[mm] - hy[mm - 1]) * imp0;
+            #pragma omp target teams distribute parallel for simd
+            for (int mm = 1; mm < SIZE; mm++) {
+                ez[mm] = ez[mm] + (hy[mm] - hy[mm - 1]) * imp0;
+            }
 
-            /* hardwire a source node */
-            ez[67] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
-            ez[133] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
-
-            hy[49] -= exp(-(qTime - 200.) * (qTime - 200.) / 100.) / imp0;
-            ez[50] += exp(-(qTime - 200.) * (qTime - 200.) / 100.);
-            ez[150] -= exp(-(qTime - 200.) * (qTime - 200.) / 100.);
-            hy[150] -= exp(-(qTime - 200.) * (qTime - 200.) / 100.) / imp0;
-
-            ez[50] += exp(-(qTime - 400.) * (qTime - 400.) / 100.);
-            ez[100] -= exp(-(qTime - 400.) * (qTime - 400.) / 100.);
-            ez[150] += exp(-(qTime - 400.) * (qTime - 400.) / 100.);
-            
+            #pragma omp target map(to: qTime)
+            {
+                /* hardwire a source node */
+                ez[67] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
+                ez[133] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
+                ss[qTime] = ez[67];
+    
+                /* simple ABC for hy[Size-1] */
+                hy[SIZE-1] = hy[SIZE-2];
+            }
         } /* end of time-stepping */
+    }
+
+    printf("step: %d\n", qTime);
+
+    for (int i = 0; i < maxTime; i++) {
+        if (ss[i] != 0) {
+            printf("%d:%f\n", i, ss[i]);
+        }
     }
 
     free(ez);
