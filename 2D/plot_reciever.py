@@ -16,12 +16,14 @@ if __name__ == "__main__":
 
     SAVE = True
 
+    SAMPLE_RATE = 8
+
     print("Animating")
 
     fig = plt.figure(figsize=(7,7))
-    ax = plt.axes(xlim=(0,501),ylim=(-y_ABS_bound,y_ABS_bound))
-    scat=ax.plot(range(STEPS), data, label="ez[100][150])")[0]
-    ax.set(xlabel="Step", ylabel="Ez[i] (V\m)", title="Electric Field Strength", aspect=STEPS/y_ABS_bound*0.33)
+    ax = plt.axes(xlim=(0,STEPS*SAMPLE_RATE),ylim=(-y_ABS_bound,y_ABS_bound))
+    scat=ax.plot([i*SAMPLE_RATE for i in range(STEPS)], data, label="ez[100][150])")[0]
+    ax.set(xlabel="Step", ylabel="Ez[i] (V\m)", title="Electric Field Strength", aspect=STEPS/y_ABS_bound)
     ax.legend()
 
     if SAVE:

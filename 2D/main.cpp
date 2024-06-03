@@ -26,7 +26,6 @@ int main() {
     Tester tester(nullptr, steps, true);
     tester.initFile("time_test.csv");
 
-    #if DEBUG_SAMPLE
     sim si(width, height, PPW);
     si.pecInit(hd.get_data());
     si.setSampler(&sa);
@@ -34,7 +33,6 @@ int main() {
     // Test Sim
     tester.test(12,1);
     return 0;
-    #endif
 
     // Initialise Testing Parameters
     int heights[] = {1000, 2500, 5000, 7500, 10000, 12500, 15000};

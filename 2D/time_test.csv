@@ -1,0 +1,2 @@
+Device, Threads, Steps, Width, Height, Time (ns), Time Per Step (ns), Time Per Cell (ns)
+CPU, 12, 1050, 19500, 500, 41099347559, 39142235, 24.945503

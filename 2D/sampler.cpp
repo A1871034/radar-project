@@ -60,7 +60,7 @@ void sampler::run(const double* ez)
         #pragma omp parallel for collapse(2)
         for (int i = 0; i < SAMPLE_X; i++) {
             for (int j = 0; j < SAMPLE_Y; j++) {
-                sample_buffer[j * SAMPLE_Y + i] = I_ez(j, i);
+                sample_buffer[i * SAMPLE_Y + j] = I_ez(i, j);
             }
         }
         #if DEBUG_SAMPLE
