@@ -13,10 +13,10 @@ int main() {
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10; // 10 Wavelengths over top of highest point
     height = 500;
-    int steps = 1000;
+    int steps = 1050;
     
     // Setup Sampler
-    sampler sa = sampler(1, width, height);
+    sampler sa = sampler(8, 1000, height, std::string((DEBUG_SAMPLE ? "sim.debug" : "sim.data")), 1001, 501);
 
     // OpenMP Device Info
     printf("Default device: %d\n", omp_get_default_device());
@@ -26,6 +26,7 @@ int main() {
     Tester tester(nullptr, steps, true);
     tester.initFile("time_test.csv");
 
+    #if DEBUG_SAMPLE
     sim si(width, height, PPW);
     si.pecInit(hd.get_data());
     si.setSampler(&sa);
@@ -33,6 +34,7 @@ int main() {
     // Test Sim
     tester.test(12,1);
     return 0;
+    #endif
 
     // Initialise Testing Parameters
     int heights[] = {1000, 2500, 5000, 7500, 10000, 12500, 15000};

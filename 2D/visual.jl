@@ -14,10 +14,11 @@ seekend(f)
 SIZE_X, SIZE_Y, PRECISION_BYTES = split(data_header, ",")
 SIZE_X = parse(Int64, SIZE_X)
 SIZE_Y = parse(Int64, SIZE_Y)
-SIZE_Z = Int64((position(f) - prev)/(SIZE_X*SIZE_Y*8))
 PRECISION_BYTES = parse(Int64, PRECISION_BYTES)
+SIZE_Z = Int64((position(f) - prev)/(SIZE_X*SIZE_Y*PRECISION_BYTES))
+
 seek(f, prev)
-ez = Array{Float64, 3}(undef, SIZE_X, SIZE_Y, SIZE_Z)
+ez = Array{Float32, 3}(undef, SIZE_X, SIZE_Y, SIZE_Z)
 read!(f, ez)
 close(f)
 
@@ -53,10 +54,10 @@ function get_function(time)
 end
 
 funct = @lift(get_function($time))
-x = range(1,1101)
-y = range(1,500)
-fig = Figure(resolution=(1100, 500))
-ax = Axis(fig[1,1], aspect=DataAspect(), title="2D Terrain Demo (Julia)", limits=(1, 1100, 1, 500))
+x = range(1,SIZE_X)
+y = range(1,SIZE_Y)
+fig = Figure(resolution=(SIZE_X, SIZE_Y))
+ax = Axis(fig[1,1], aspect=DataAspect(), title="2D Terrain Demo (Julia)", limits=(1, SIZE_X, 1, SIZE_Y))
 hm = heatmap!(ax, x, y, funct, colormap=:coolwarm, colorscale=colorscale, colorrange=(-0.01, 0.01))
 
 Colorbar(fig[:, end+1], hm, width=10)
