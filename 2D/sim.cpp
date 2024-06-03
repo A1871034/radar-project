@@ -193,12 +193,6 @@ void sim::run(unsigned int timesteps) {
         
     }
 
-    for (int i = 0; i < SIZE_Y*SIZE_X; i++) {
-        if (sample_data[i] != 0) {
-            printf("%f\n", sample_data[i]);
-        }
-    }
-
     #if DEBUG_SAMPLE
     // sample_data
         printf("Writing sample data\n");

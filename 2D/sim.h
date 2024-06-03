@@ -18,7 +18,7 @@
 #define I_ezTop(N, Q, M) ezTop[(M) * 6 + (Q) * 3 + (N)]
 #define I_ezBot(N, Q, M) ezBot[(M) * 6 + (Q) * 3 + (N)]
 
-#define DEBUG_SAMPLE true
+#define DEBUG_SAMPLE false
 
 class sim {
     friend class sampler;

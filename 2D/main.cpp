@@ -14,7 +14,7 @@ int main() {
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10;
     height = 1000;
-    int steps = 200;//width;
+    int steps = 100;//width;
 
     // Setup Sampler
     sampler sa = sampler(0, width, height, "sim.data");
