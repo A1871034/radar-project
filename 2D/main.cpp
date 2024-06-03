@@ -13,10 +13,10 @@ int main() {
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10; // 10 Wavelengths over top of highest point
     height = 500;
-    int steps = 1050;
+    int steps = 1500;
     
     // Setup Sampler
-    sampler sa = sampler(8, 1000, height, std::string((DEBUG_SAMPLE ? "sim.debug" : "sim.data")), 1001, 501);
+    sampler sa = sampler(10, 1000, height, std::string((DEBUG_SAMPLE ? "sim.debug" : "sim.data")), 1001, 501);
 
     // OpenMP Device Info
     printf("Default device: %d\n", omp_get_default_device());
