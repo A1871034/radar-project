@@ -3,7 +3,6 @@
 #include <math.h>
 #include "sampler.h"
 #include "constants.h"
-#include <omp.h>
 
 #define I_hx(m, n) hx[(m) * (SIZE_Y - 1) + n]
 #define I_hy(m, n) hy[(m) * SIZE_Y + n]
@@ -24,7 +23,6 @@ class sim {
     unsigned int SIZE_X;
     unsigned int SIZE_Y;
     unsigned int PPW;
-    int THREADS = omp_get_num_procs();
 
     // Update E_CONST, H_CONST with a grid and stored values to have different materials at locations
     double CONST_SAME_FIELD = 1.0;
@@ -54,7 +52,6 @@ class sim {
     const double *get_ez();
     void run(unsigned int timesteps);
     void reset();
-    void setDesiredThreads(int num);
     unsigned int getSizeX();
     unsigned int getSizeY();
 };

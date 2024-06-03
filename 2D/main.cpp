@@ -3,8 +3,6 @@
 #include "height_data.h"
 #include "tester.h"
 
-#include <omp.h>
-
 int main() {
     unsigned int PPW = 20;
 
@@ -12,15 +10,11 @@ int main() {
     height_data hd ("./heights.data");
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10; // 10 Wavelengths over top of highest point
-    height = 500;
-    int steps = 1500;
+    height = 10000;
+    int steps = 100;
     
     // Setup Sampler
     sampler sa = sampler(10, 1000, height, std::string((DEBUG_SAMPLE ? "sim.debug" : "sim.data")), 1001, 501);
-
-    // OpenMP Device Info
-    printf("Default device: %d\n", omp_get_default_device());
-    printf("Devices: %d\n", omp_get_num_devices());
     
     // Setup Tester
     Tester tester(nullptr, steps, true);
@@ -31,7 +25,7 @@ int main() {
     si.setSampler(&sa);
     tester.setSim(&si);
     // Test Sim
-    tester.test(12,1);
+    tester.test();
     return 0;
 
     // Initialise Testing Parameters
@@ -46,7 +40,7 @@ int main() {
         tester.setSim(&si);
         for (int thread_count: threads) {
             // Test Sim
-            tester.test(thread_count,1);
+            tester.test();
         }
     }
 

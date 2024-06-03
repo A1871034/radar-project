@@ -1,7 +1,6 @@
 #include "sim.h"
 
 #include <cstdlib>
-#include <omp.h>
 #include <math.h>
 
 // Update Equations and ABCs from https://eecs.wsu.edu/~schneidj/ufdtd/ufdtd.pdf
@@ -52,7 +51,6 @@ const double* sim::get_ez() {
 void sim::run(unsigned int timesteps) {
     for (unsigned int step = 0; step < timesteps; step++) {
         // updateH();
-        #pragma omp parallel for collapse(2)
         for (unsigned int m = 0; m < SIZE_X; m++) {
             for (unsigned int n = 0; n < SIZE_Y - 1; n++) {        
                 //Hx(mm, nn) = Chxh(mm, nn) * Hx(mm, nn) - Chxe(mm, nn) * (Ez(mm, nn + 1) - Ez(mm, nn));
@@ -60,7 +58,6 @@ void sim::run(unsigned int timesteps) {
             }
         }
 
-        #pragma omp parallel for collapse(2)
         for (unsigned int m = 0; m < SIZE_X - 1; m++) {
             for (unsigned int n = 0; n < SIZE_Y; n++) {
                 //Hy(mm, nn) = Chyh(mm, nn) * Hy(mm, nn) + Chye(mm, nn) * (Ez(mm + 1, nn) - Ez(mm, nn));
@@ -69,7 +66,6 @@ void sim::run(unsigned int timesteps) {
         }   
 
         // updateE();
-        #pragma omp parallel for collapse(2)
         for (unsigned int m = 1; m < SIZE_X - 1; m++) {
             for (unsigned int n = 1; n < SIZE_Y - 1; n++) {
                 // Ez(mm, nn) = Ceze(mm, nn) * Ez(mm, nn) +
@@ -82,14 +78,12 @@ void sim::run(unsigned int timesteps) {
         }
 
         // pec();
-        #pragma omp parallel for
         for (unsigned int i = 1; i < SIZE_X - 1; i++) {
             I_ez(i, PEC_HEIGHTS[i]) = 0.0;
         }                
 
         // abc();
         /* ABC at left/right side of grid */
-        #pragma omp parallel for
         for (unsigned int n = 0; n < SIZE_Y; n++) {
             I_ez(0, n) = ABC_COEF0 * (I_ez(2, n) + I_ezLeft(0, 1, n))
                 + ABC_COEF1 * (I_ezLeft(0, 0, n) + I_ezLeft(2, 0, n)
@@ -111,7 +105,6 @@ void sim::run(unsigned int timesteps) {
             }
         }
         /* ABC at bottom/top of grid */
-        #pragma omp parallel for
         for (unsigned int m = 0; m < SIZE_X; m++) {
             I_ez(m, 0) = ABC_COEF0 * (I_ez(m, 2) + I_ezBot(0, 1, m))
             + ABC_COEF1 * (I_ezBot(0, 0, m) + I_ezBot(2, 0, m)
@@ -167,14 +160,6 @@ void sim::reset() {
         ezLeft[i] == 0;
         ezRight[i] == 0;
     }
-}
-
-void sim::setDesiredThreads(int num = 0) {
-    omp_set_dynamic(0); // Ensure thread count is not changing throughout
-    printf("Requesting %d threads\n", num);
-    omp_set_num_threads(num);
-    THREADS = num;
-    // Verifying here would make sense but don't want to work too much on CPU implementation
 }
 
 unsigned int sim::getSizeX() {

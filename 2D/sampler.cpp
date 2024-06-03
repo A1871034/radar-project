@@ -56,8 +56,7 @@ void sampler::prepareWriting() {
 void sampler::run(const double* ez)
 {
     if ((sampleEvery != 0) && (step++ % sampleEvery == 0)) {
-        printf("step: %d\n", step - 1);
-        #pragma omp parallel for collapse(2)
+        //printf("step: %d\n", step - 1);
         for (int i = 0; i < SAMPLE_X; i++) {
             for (int j = 0; j < SAMPLE_Y; j++) {
                 sample_buffer[i * SAMPLE_Y + j] = I_ez(i, j);

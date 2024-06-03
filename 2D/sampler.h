@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#define DEBUG_SAMPLE true
+#define DEBUG_SAMPLE false
 
 class sampler {
     unsigned int sampleEvery = 2;
