@@ -16,7 +16,7 @@ if __name__ == "__main__":
         
     with open("2D/sim.data", "rb") as f:
         f.seek(seekTo)
-        data = np.frombuffer(f.read(), dtype=np.double)
+        data = np.frombuffer(f.read(), dtype=np.float)
         finalTell = f.tell()
 
     STEPS = (finalTell-seekTo) // (SIZE_X*SIZE_Y*PRECISION_BYTES)

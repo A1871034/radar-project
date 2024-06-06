@@ -16,27 +16,27 @@
 class sim {
     friend class sampler;
 
-    double * hx;
-    double * hy;
-    double * ez;
+    float * hx;
+    float * hy;
+    float * ez;
 
     unsigned int SIZE_X;
     unsigned int SIZE_Y;
     unsigned int PPW;
 
     // Update E_CONST, H_CONST with a grid and stored values to have different materials at locations
-    double CONST_SAME_FIELD = 1.0;
-    double CONST_E_DUE_TO_H = CDTDS*IMP0;
-    double CONST_H_DUE_TO_E = CDTDS/IMP0;
+    float CONST_SAME_FIELD = 1.0;
+    float CONST_E_DUE_TO_H = CDTDS*IMP0;
+    float CONST_H_DUE_TO_E = CDTDS/IMP0;
 
     // 2nd Order ABC Variables
-    double ABC_COEF0;
-    double ABC_COEF1;
-    double ABC_COEF2;
-    double * ezTop;
-    double * ezRight;
-    double * ezBot;
-    double * ezLeft;
+    float ABC_COEF0;
+    float ABC_COEF1;
+    float ABC_COEF2;
+    float * ezTop;
+    float * ezRight;
+    float * ezBot;
+    float * ezLeft;
 
     // Terrain reflection
     int * PEC_HEIGHTS = nullptr;
@@ -49,7 +49,7 @@ class sim {
     void setSampler(sampler * _s);
     void abcInit();
     void pecInit(int * data);
-    const double *get_ez();
+    const float *get_ez();
     void run(unsigned int timesteps);
     void reset();
     unsigned int getSizeX();

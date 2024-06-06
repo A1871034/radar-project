@@ -22,8 +22,8 @@ uint64_t Tester::timePerStep(uint64_t runTime) {
     return runTime/STEPS;
 }
 
-double Tester::timePerCell(uint64_t runTime) {
-    return double(runTime)/double(STEPS*(s->getSizeX())*(s->getSizeY()));
+float Tester::timePerCell(uint64_t runTime) {
+    return float(runTime)/float(STEPS*(s->getSizeX())*(s->getSizeY()));
 }
 
 void Tester::test() {
@@ -34,12 +34,12 @@ void Tester::test() {
     unsigned int width = s->getSizeX();
     unsigned int height = s->getSizeY();
     uint64_t tps = timePerStep(duration);
-    double tpc = timePerCell(duration);
+    float tpc = timePerCell(duration);
 
     if (VERBOSE) {
         printf("ns: %lu\n", duration);
         printf("Steps: %d | Dim: %ux%u\nTime (s): %.2f\nTime Per Step (ms): %.2f\nTime Per Cell (ns): %.4f\n--------------\n",
-            STEPS, width, height, double(duration)/double(pow(10, 9)), double(tps)/double(pow(10,6)), tpc);
+            STEPS, width, height, float(duration)/float(pow(10, 9)), float(tps)/float(pow(10,6)), tpc);
     }
 
     if (OUTPUT_TO_FILE) {

@@ -10,7 +10,7 @@ using namespace std;
 
 int main()
 {
-    double ez[SIZE] = {0.}, hy[SIZE] = {0.}, imp0 = 377.0;
+    float ez[SIZE] = {0.}, hy[SIZE] = {0.}, imp0 = 377.0;
     int qTime, maxTime = 580, mm;
 
     stringstream ss;

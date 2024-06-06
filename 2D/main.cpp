@@ -10,7 +10,7 @@ int main() {
     height_data hd ("./heights.data");
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10; // 10 Wavelengths over top of highest point
-    height = 10000;
+    height = 20000;
     int steps = 100;
     
     // Setup Sampler

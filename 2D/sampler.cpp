@@ -53,7 +53,7 @@ void sampler::prepareWriting() {
     fileHandle = fopen(fileName.c_str(), "ab");
 }
 
-void sampler::run(const double* ez)
+void sampler::run(const float* ez)
 {
     if ((sampleEvery != 0) && (step++ % sampleEvery == 0)) {
         //printf("step: %d\n", step - 1);
@@ -65,7 +65,7 @@ void sampler::run(const double* ez)
         #if DEBUG_SAMPLE
         fwrite(sample_buffer, sizeof(float), SAMPLE_Y * SAMPLE_X, fileHandle);
         #else
-        fwrite(&I_ez(100, 150), sizeof(double), 1, fileHandle);
+        fwrite(&I_ez(100, 150), sizeof(float), 1, fileHandle);
         #endif
     }
 

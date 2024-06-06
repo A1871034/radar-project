@@ -7,9 +7,9 @@
 
 
 sim::sim(unsigned int sizeX, unsigned int sizeY, unsigned int PPW) : SIZE_X(sizeX), SIZE_Y(sizeY), PPW(PPW) {
-    hx = (double *) calloc(SIZE_X * (SIZE_Y - 1), sizeof(double)); 
-    hy = (double *) calloc((SIZE_X - 1) * SIZE_Y, sizeof(double));
-    ez = (double *) calloc(SIZE_X * SIZE_Y, sizeof(double)); 
+    hx = (float *) calloc(SIZE_X * (SIZE_Y - 1), sizeof(float)); 
+    hy = (float *) calloc((SIZE_X - 1) * SIZE_Y, sizeof(float));
+    ez = (float *) calloc(SIZE_X * SIZE_Y, sizeof(float)); 
     abcInit();
 }
 
@@ -28,13 +28,13 @@ void sim::setSampler(sampler * _s) {
 }
 
 void sim::abcInit() {
-    ezTop = (double *) calloc(SIZE_X*6, sizeof(double));
-    ezRight = (double *) calloc(SIZE_Y*6, sizeof(double));
-    ezBot = (double *) calloc(SIZE_X*6, sizeof(double));
-    ezLeft = (double *) calloc(SIZE_Y*6, sizeof(double));
+    ezTop = (float *) calloc(SIZE_X*6, sizeof(float));
+    ezRight = (float *) calloc(SIZE_Y*6, sizeof(float));
+    ezBot = (float *) calloc(SIZE_X*6, sizeof(float));
+    ezLeft = (float *) calloc(SIZE_Y*6, sizeof(float));
 
-    double temp0 = sqrt(CONST_E_DUE_TO_H * CONST_H_DUE_TO_E); // in case of our solely free space just becomes CDTDS
-    double temp1 = 1.0 / temp0 + 2.0 + temp0;
+    float temp0 = sqrt(CONST_E_DUE_TO_H * CONST_H_DUE_TO_E); // in case of our solely free space just becomes CDTDS
+    float temp1 = 1.0 / temp0 + 2.0 + temp0;
     ABC_COEF0 = -(1.0 / temp0 - 2.0 + temp0) / temp1;
     ABC_COEF1 = -2.0 * (temp0 - 1.0 / temp0) / temp1;
     ABC_COEF2 = 4.0 * (temp0 + 1.0 / temp0) / temp1;
@@ -44,7 +44,7 @@ void sim::pecInit(int *data) {
     PEC_HEIGHTS = data;
 }
 
-const double* sim::get_ez() {
+const float* sim::get_ez() {
     return ez;
 }
 
@@ -127,7 +127,7 @@ void sim::run(unsigned int timesteps) {
         }
 
         // Hardwired additive sourcenode
-        double arg = M_PI * ((CDTDS * step - 0.0) / PPW - 1.0);
+        float arg = M_PI * ((CDTDS * step - 0.0) / PPW - 1.0);
         arg = arg * arg;
         I_ez(100, 150) += (1.0 - 2.0 * arg) * exp(-arg); 
 

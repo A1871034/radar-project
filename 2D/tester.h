@@ -16,7 +16,7 @@ class Tester {
     
     uint64_t timeRun(); // Nanoseconds
     uint64_t timePerStep(uint64_t runTime);
-    double timePerCell(uint64_t runTime);
+    float timePerCell(uint64_t runTime);
     public:
     Tester(sim* s, int steps, bool verbose = false) : s(s), STEPS(steps), VERBOSE(verbose) {}
     ~Tester() {}

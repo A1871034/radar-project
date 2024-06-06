@@ -7,7 +7,7 @@ import numpy as np
 if __name__ == "__main__":
     PRECISION_BYTES = 8        
     with open("sim.data", "rb") as f:
-        data = np.frombuffer(f.read(), dtype=np.double)
+        data = np.frombuffer(f.read(), dtype=np.float)
         finalTell = f.tell()
     STEPS = (finalTell) // (PRECISION_BYTES)
     print(f"loaded {STEPS} steps")

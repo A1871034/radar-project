@@ -26,6 +26,6 @@ class sampler {
         ~sampler();
         void setSampleEvery(unsigned int _sampleEvery);
         void prepareWriting();
-        void run(const double *ez);
+        void run(const float *ez);
         void setSampleSize(unsigned int sample_x, unsigned int sample_y);
 };

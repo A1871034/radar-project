@@ -12,9 +12,9 @@ using namespace std;
 
 int main()
 {
-    double * ez = (double*) calloc(SIZE, sizeof(double));
-    double * hy = (double*) calloc(SIZE, sizeof(double));
-    double imp0 = 377.0;
+    float * ez = (float*) calloc(SIZE, sizeof(float));
+    float * hy = (float*) calloc(SIZE, sizeof(float));
+    float imp0 = 377.0;
     int qTime, maxTime = 10000, mm, sample_period = 10;
 
     char * ss = (char *) malloc((maxTime/sample_period + 1)*sizeof(char));
