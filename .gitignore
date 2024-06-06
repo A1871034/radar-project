@@ -1,4 +1,6 @@
 2D/sim.data
+2D/sim.debug
 2D/sim_19500_steps.data
+1D/gpu1d.data
 test.csv
 *.exe
