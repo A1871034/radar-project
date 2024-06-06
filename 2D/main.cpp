@@ -1,5 +1,4 @@
 #include "sim.h"
-#include "sampler.h"
 #include "height_data.h"
 #include "tester.h"
 
@@ -13,11 +12,9 @@ int main() {
     height_data hd ("./heights.data");
     int width = hd.get_x();
     int height = hd.get_min_y() + PPW*10;
-    height = 1000;
+    height = 10000;
+    //hd.set_max_y(height-1);
     int steps = 100;//width;
-
-    // Setup Sampler
-    sampler sa = sampler(0, width, height, "sim.data");
 
     // OpenMP Device Info
     printf("Default device: %d\n", omp_get_default_device());
@@ -31,7 +28,7 @@ int main() {
         sim si(width, height, PPW);
         si.pecInit(hd.get_data());
         si.initSampler();
-        si.setSamplePeriod(20);
+        si.setSamplePeriod(10);
         tester.setSim(&si);
         // Test Sim
         tester.test(gpu_device);
@@ -39,12 +36,13 @@ int main() {
     #endif
 
     // Initialise Testing Parameters
-    int heights[] = {1000, 2500, 5000, 7500, 10000, 12500, 15000};
+    int heights[] = {10000};//, 2500, 5000, 7500, 10000, 12500, 15000};
 
     // Run test    
     for (int height: heights) {
         // Setup simulation
         sim si(width, height, PPW);
+        //hd.set_max_y(height-1);
         si.pecInit(hd.get_data());
         tester.setSim(&si);
         // Test Sim

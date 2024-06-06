@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sampler.h"
 #include "constants.h"
 
 #include <math.h>
@@ -32,7 +31,7 @@ class sim {
     unsigned int PPW;
     #if DEBUG_SAMPLE
     FILE * FILE_HANDLE;
-    unsigned int SAMPLE_PERIOD = 199;
+    unsigned int SAMPLE_PERIOD = 20;
     #endif
 
     // Update E_CONST, H_CONST with a grid and stored values to have different materials at locations
@@ -55,12 +54,9 @@ class sim {
     int N_THREADS = -1;
     int DEVICE_N = -1;
 
-    sampler * s;
-
     public:
     sim(unsigned int sizeX, unsigned int sizeY, unsigned int PPW);
     ~sim();
-    void setSampler(sampler * _s);
     void abcInit();
     void pecInit(int * data);
     const double *get_ez();
