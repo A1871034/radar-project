@@ -18,7 +18,7 @@ int main()
     int maxTime = 200;
     int qTime = 0;
 
-    double * ss = (double *) malloc(maxTime*sizeof(double));
+    float * ss = (float *) malloc(maxTime*sizeof(float));
     
 
     /* do time stepping */
@@ -48,7 +48,7 @@ int main()
                 /* hardwire a source node */
                 ez[67] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
                 ez[133] += exp(-(qTime - 30.) * (qTime - 30.) / 100.);
-                ss[qTime] = ez[67];
+                ss[qTime] = (float) ez[67];
     
                 /* simple ABC for hy[Size-1] */
                 hy[SIZE-1] = hy[SIZE-2];
@@ -63,6 +63,13 @@ int main()
             printf("%d:%f\n", i, ss[i]);
         }
     }
+
+    FILE * fileHandle = fopen("gpu1d.data","w");
+    fprintf(fileHandle, "%d,1,4\n", SIZE);
+    fclose(fileHandle);
+    fileHandle = fopen("gpu1d.data", "ab");
+    fwrite(ss, sizeof(float), SIZE, fileHandle);
+    fclose(fileHandle);
 
     free(ez);
     free(hy);
