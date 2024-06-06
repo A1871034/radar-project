@@ -18,7 +18,7 @@ PRECISION_BYTES = parse(Int64, PRECISION_BYTES)
 SIZE_Z = Int64((position(f) - prev)/(SIZE_X*SIZE_Y*PRECISION_BYTES))
 
 seek(f, prev)
-ez = Array{Float64, 3}(undef, SIZE_X, SIZE_Y, SIZE_Z)
+ez = Array{Float32, 3}(undef, SIZE_X, SIZE_Y, SIZE_Z)
 read!(f, ez)
 close(f)
 
@@ -53,19 +53,22 @@ function get_function(time)
 	fn
 end
 
+SAMPLE_PERIOD = 8
+
 funct = @lift(get_function($time))
-x = range(1,1101)
-y = range(1,500)
-fig = Figure(resolution=(1100, 500))
-ax = Axis(fig[1,1], aspect=DataAspect(), title="2D Terrain Demo (Julia)", limits=(1, 1100, 1, 500))
+x = range(1,1001)
+y = range(1,501)
+fig = Figure(resolution=(1001, 501))
+ax = Axis(fig[1,1], aspect=DataAspect(), title="2D FDTD with Terrain", limits=(1, 1001, 1, 501), xlabel=@lift string("Step ", ($time[1]-1)*SAMPLE_PERIOD))
 hm = heatmap!(ax, x, y, funct, colormap=:coolwarm, colorscale=colorscale, colorrange=(-0.01, 0.01))
 
 Colorbar(fig[:, end+1], hm, width=10)
 rowsize!(fig.layout, 1, size(ax.scene)[2])
 resize_to_layout!(fig)
-lines!(ax, terrain_heights, color="black", label=false)
+ln = lines!(ax, terrain_heights, color="black")
 
 time[] = 1
+
 #display(fig)
 
 println("Animating...")
