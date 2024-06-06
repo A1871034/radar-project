@@ -15,4 +15,5 @@ class height_data {
     int * get_data();
     int get_x();
     int get_min_y();
+    void set_max_y(int max_height);
 };

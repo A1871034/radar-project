@@ -38,3 +38,9 @@ int height_data::get_min_y() {
     }
     return ma;
 }
+
+void height_data::set_max_y(int max_height) {
+    for (int i = 0; i < size; i++) {
+        data[i] = (data[i] > max_height) ? max_height : data[i];
+    }
+}
